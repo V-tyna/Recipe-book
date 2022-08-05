@@ -1,33 +1,34 @@
-import { Component, ElementRef, EventEmitter, OnInit, Output, ViewChild } from '@angular/core';
+import { Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
 import { Ingredient } from 'src/app/shared/ingredient.model';
+import { ShoppingListService } from '../services/shopping-list.service';
 
 @Component({
   selector: 'app-shopping-list-edit',
   templateUrl: './shopping-list-edit.component.html',
   styleUrls: ['./shopping-list-edit.component.css']
 })
-export class ShoppingListEditComponent implements OnInit {
-  @ViewChild('ingredientName', {static: false}) public ingredientNameRef?: ElementRef;
-  public ingredientAmount: number = 1;
-  @Output() public newIngredient = new EventEmitter<Ingredient>();
-  constructor() { }
+export class ShoppingListEditComponent {
+  @ViewChild('ingredientName', { static: false }) public ingredientNameRef!: ElementRef;
 
-  ngOnInit(): void {
-  }
+  public ingredientAmount = 1;
+
+  constructor(private shoppingListService: ShoppingListService) { }
 
   public onAddIngredient() {
-    if(this.ingredientNameRef) {
-      const newIng = new Ingredient(this.ingredientNameRef.nativeElement.value, this.ingredientAmount)
-      this.newIngredient.emit(newIng);
-    }
+    const newIng = new Ingredient(
+      this.ingredientNameRef.nativeElement.value,
+      this.ingredientAmount
+    );
+    this.shoppingListService.addIngredient(newIng);
   }
 
   public onDeleteIngredient() {
-
+    // Change the line below (stub for eslint) TODO:
+    this.ingredientAmount = 2;
   }
 
   public onClearIngredientField() {
-
+    // Change the line below (stub for eslint) TODO:
+    this.ingredientAmount = 2;
   }
-
 }
