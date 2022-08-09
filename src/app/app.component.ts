@@ -6,9 +6,4 @@ import { Component } from '@angular/core';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  public currentFeature = 'recipes';
-
-  public navigateTo(type: string) {
-    this.currentFeature = type;
-  }
 }

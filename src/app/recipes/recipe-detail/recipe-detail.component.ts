@@ -9,9 +9,9 @@ import { RecipeService } from '../services/recipe.service';
   styleUrls: ['./recipe-detail.component.css']
 })
 export class RecipeDetailComponent implements OnInit {
-  public recipeDetails!: Recipe;
+  public recipeDetails: Recipe;
 
-  public id?: number;
+  public id: number;
 
   constructor(
     private recipeService: RecipeService,

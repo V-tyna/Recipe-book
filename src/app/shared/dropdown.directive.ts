@@ -12,6 +12,5 @@ export class DropdownDirective {
     this.isOpen = this.elRef.nativeElement.contains(event.target) ? !this.isOpen : false;
   }
 
-  // eslint-disable-next-line no-unused-vars
   constructor(private elRef: ElementRef) {}
 }

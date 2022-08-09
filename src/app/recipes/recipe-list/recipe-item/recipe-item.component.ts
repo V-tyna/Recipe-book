@@ -7,9 +7,9 @@ import { Recipe } from '../../recipes/recipe.model';
   styleUrls: ['./recipe-item.component.css']
 })
 export class RecipeItemComponent implements OnInit {
-  @Input() public recipe!: Recipe;
+  @Input() public recipe: Recipe;
 
-  @Input() public index?: number;
+  @Input() public index: number;
 
   public descriptionFirstSentence!: string;
 
