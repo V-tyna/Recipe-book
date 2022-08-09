@@ -13,7 +13,7 @@ export class ShoppingListService {
     new Ingredient('egg plant', 1),
   ];
 
-  public getIngredients() {
+  public getIngredients(): Ingredient[] {
     return this.ingredients.slice();
   }
 

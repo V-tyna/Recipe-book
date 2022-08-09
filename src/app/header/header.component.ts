@@ -1,14 +1,13 @@
-import { Component, EventEmitter, Output } from '@angular/core';
+import { Component } from '@angular/core';
+import { appPaths } from '../configs/appPaths';
+import { AppPaths } from '../shared/appPaths.model';
 
 @Component({
   selector: 'app-header',
-  templateUrl: 'header.component.html'
+  templateUrl: 'header.component.html',
+  styleUrls: ['header.component.css']
 })
 
 export class HeaderComponent {
-  @Output() public navigationLink = new EventEmitter<string>();
-
-  public onSelect(type: string) {
-    this.navigationLink.emit(type);
-  }
+  public paths: AppPaths = appPaths;
 }

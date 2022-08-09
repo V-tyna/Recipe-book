@@ -19,6 +19,8 @@ module.exports = {
   ],
   rules: {
     indent: ['error', 2],
+    'dot-notation': 0,
+    'import/extensions': 0,
     'import/no-unresolved': 0,
     'import/prefer-default-export': 0,
     'comma-dangle': 0,

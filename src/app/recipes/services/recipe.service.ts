@@ -16,10 +16,10 @@ export class RecipeService {
       Next, rub the spice mixture all over the pork. Now spray its top liberally with olive oil.
       Cook the pork for 15 minutes at 425°F, then lower the oven to 375°F and continue cooking to an internal temperature of 145°F, about 75 more minutes.
       Let it rest for 20 minutes before slicing and serving.`,
-      'https://images.unsplash.com/photo-1625631980820-fbdc8ca2e902?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=2070&q=80',
+      'https://images.unsplash.com/photo-1504649346668-2cc86afaa2e1?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1664&q=80',
       [
         new Ingredient('pork', 1),
-        new Ingredient('rosemary', 1),
+        new Ingredient('rosemary', 3),
         new Ingredient('garlic ', 4),
         new Ingredient('lemon ', 1),
         new Ingredient('paprika', 1),
@@ -79,11 +79,15 @@ export class RecipeService {
 
   constructor(private shoppingListService: ShoppingListService) {}
 
-  public getRecipes() {
+  public getRecipes(): Recipe[] {
     return this.recipes.slice();
   }
 
+  public getRecipeById(index: number): Recipe {
+    return this.recipes.slice()[index];
+  }
+
   public addIngredientsToTheShoppingList(ingredients: Ingredient[]) {
-    return this.shoppingListService.addIngredients(ingredients);
+    this.shoppingListService.addIngredients(ingredients);
   }
 }
