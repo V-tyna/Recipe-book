@@ -1,0 +1,10 @@
+a {
+  display: flex;
+  justify-content: space-between;
+}
+
+.edit-btn {
+  border-radius: 5px;
+  border: 0px;
+  background-color: transparent;
+}

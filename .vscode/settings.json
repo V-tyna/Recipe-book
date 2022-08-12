@@ -1,3 +1,7 @@
 {
-  "eslint.useESLintClass": true
+  "eslint.useESLintClass": true,
+  "cSpell.words": [
+    "Ingrs",
+    "Ings"
+  ]
 }

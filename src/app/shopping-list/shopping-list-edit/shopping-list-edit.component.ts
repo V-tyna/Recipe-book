@@ -1,4 +1,6 @@
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { NgForm } from '@angular/forms';
+import { Subscription } from 'rxjs';
 import { Ingredient } from 'src/app/shared/ingredient.model';
 import { ShoppingListService } from '../services/shopping-list.service';
 
@@ -7,28 +9,52 @@ import { ShoppingListService } from '../services/shopping-list.service';
   templateUrl: './shopping-list-edit.component.html',
   styleUrls: ['./shopping-list-edit.component.css']
 })
-export class ShoppingListEditComponent {
-  @ViewChild('ingredientName', { static: false }) public ingredientNameRef!: ElementRef;
+export class ShoppingListEditComponent implements OnInit, OnDestroy {
+  @ViewChild('ingrsForm', { static: true }) ingrsForm: NgForm;
+  public defaultAmount = 1;
+  public editMode = false;
 
-  public ingredientAmount = 1;
+  private editedItemIndex: number;
+  private editedItem: Ingredient;
+  private subscription: Subscription;
 
   constructor(private shoppingListService: ShoppingListService) { }
 
-  public onAddIngredient() {
-    const newIng = new Ingredient(
-      this.ingredientNameRef.nativeElement.value,
-      this.ingredientAmount
-    );
-    this.shoppingListService.addIngredient(newIng);
+  public ngOnInit(): void {
+    this.subscription = this.shoppingListService.startedEditing
+      .subscribe((i: number) => {
+        this.editMode = true;
+        this.editedItemIndex = i;
+        this.editedItem = this.shoppingListService.getIngredient(i);
+        this.ingrsForm.setValue({
+          ingredientName: this.editedItem.name,
+          ingredientAmount: this.editedItem.amount
+        });
+      });
   }
 
-  public onDeleteIngredient() {
-    // Change the line below (stub for eslint) TODO:
-    this.ingredientAmount = 2;
+  public onSubmitIngredient(ingrsForm: NgForm): void {
+    const { ingredientName, ingredientAmount } = ingrsForm.value;
+    const newIng = new Ingredient(ingredientName, ingredientAmount);
+    if (this.editMode) {
+      this.shoppingListService.updateIngredient(this.editedItemIndex, newIng);
+      this.editMode = false;
+    } else {
+      this.shoppingListService.addIngredient(newIng);
+    }
+    ingrsForm.reset();
   }
 
-  public onClearIngredientField() {
-    // Change the line below (stub for eslint) TODO:
-    this.ingredientAmount = 2;
+  public onDeleteIngredient(): void {
+    this.shoppingListService.deleteIngredient(this.editedItemIndex);
+  }
+
+  public onClearIngredientField(ingrsForm: NgForm): void {
+    this.editMode = false;
+    ingrsForm.reset();
+  }
+
+  public ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 }
