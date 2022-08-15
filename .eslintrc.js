@@ -21,6 +21,7 @@ module.exports = {
     indent: ['error', 2],
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
     'no-debugger': 1,
+    'class-methods-use-this': 0,
     'comma-dangle': 0,
     'dot-notation': 0,
     'import/extensions': 0,
@@ -29,6 +30,7 @@ module.exports = {
     'keyword-spacing': 0,
     'no-empty-function': 0,
     'no-useless-constructor': 0,
+    'no-unused-expressions': 0,
     'no-unused-vars': 0,
     'object-curly-newline': 0
   }

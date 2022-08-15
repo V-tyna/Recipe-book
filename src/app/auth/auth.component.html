@@ -1,0 +1,49 @@
+<div class="row" *ngIf="!isLoading; else loading">
+  <div class="col-xs-12 col-md-6 col-md-offset-3">
+    <div class="alert alert-danger" *ngIf="error">
+      <p>{{ error }}</p>
+    </div>
+    <form [formGroup]="signForm" (ngSubmit)="onSubmit()">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input
+          type="text"
+          class="form-control"
+          id="email"
+          formControlName="email"
+        />
+        <span *ngIf="signForm.get('email')?.errors?.['email']">
+          Please enter valid email.</span
+        >
+        <span *ngIf="signForm.get('email')?.errors?.['required'] && signForm.touched">
+          This field shouldn't be empty</span
+        >
+      </div>
+      <div class="form-group">
+        <label for="password">Password:</label>
+        <input
+          type="password"
+          class="form-control"
+          id="password"
+          formControlName="password"
+        />
+        <span *ngIf="signForm.get('password')?.errors?.['minlength']">
+          Password length can't be less than 6. Current length is
+          {{ signForm.get('password')?.errors?.['minlength'].actualLength }} .</span
+        >
+        <span *ngIf="signForm.get('password')?.errors?.['required'] && signForm.touched">
+          This field shouldn't be empty</span
+        >
+      </div>
+      <button class="btn btn-primary" type="submit" [disabled]="signForm.invalid">
+        {{ isLoginMode ? "Login" : "Sign up" }}
+      </button>
+      <button class="btn btn-primary" type="button" (click)="onSwitchMode()">
+        Switch to {{ isLoginMode ? "Sign up" : "Login" }}
+      </button>
+    </form>
+  </div>
+</div>
+<ng-template #loading>
+  <app-loading-spinner></app-loading-spinner>
+</ng-template>
