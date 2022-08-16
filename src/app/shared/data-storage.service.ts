@@ -1,6 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { map, tap } from 'rxjs/operators';
+import { map, take, tap } from 'rxjs/operators';
+import { AuthService } from '../auth/auth.service';
 import { Recipe } from '../recipes/recipes/recipe.model';
 import { RecipeService } from '../recipes/services/recipe.service';
 
@@ -10,13 +11,14 @@ import { RecipeService } from '../recipes/services/recipe.service';
 export class DataStorageService {
   constructor(
     private http: HttpClient,
-    private recipeService: RecipeService
+    private recipeService: RecipeService,
+    private authService: AuthService
   ) { }
 
   public storeRecipes() {
     const recipes = this.recipeService.getRecipes();
     return this.http.put('https://recipe-book-d859e-default-rtdb.firebaseio.com/recipes.json', recipes)
-      .subscribe((response) => {
+      .subscribe(() => {
         // console.log(response);
       });
   }

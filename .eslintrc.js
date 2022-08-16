@@ -20,7 +20,9 @@ module.exports = {
   rules: {
     indent: ['error', 2],
     'lines-between-class-members': ['error', 'always', { exceptAfterSingleLine: true }],
+    'max-len': ['error', { code: 140 }],
     'no-debugger': 1,
+    '@typescript-eslint/ban-ts-comment': 1,
     'class-methods-use-this': 0,
     'comma-dangle': 0,
     'dot-notation': 0,
@@ -29,6 +31,7 @@ module.exports = {
     'import/prefer-default-export': 0,
     'keyword-spacing': 0,
     'no-empty-function': 0,
+    'no-underscore-dangle': 0,
     'no-useless-constructor': 0,
     'no-unused-expressions': 0,
     'no-unused-vars': 0,

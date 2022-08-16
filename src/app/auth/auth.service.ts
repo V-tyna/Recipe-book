@@ -1,19 +1,29 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Observable, ObservableInput, throwError } from 'rxjs';
-import { catchError } from 'rxjs/operators';
+import { BehaviorSubject, Observable, ObservableInput, throwError } from 'rxjs';
+import { catchError, tap } from 'rxjs/operators';
 import { AuthResponse } from './models/auth-response.model';
+import { User } from './models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  constructor(private http: HttpClient) {}
+  public user = new BehaviorSubject<User | null>(null);
+
+  constructor(private http: HttpClient) { }
 
   public signUp(email: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
       'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDlVT_dcJpntW8ND0CH7vKizDUFN4XLB9k',
       { email, password, returnSecureToken: true }
     )
-      .pipe(catchError((err) => this.errorHandler(err, email)));
+      .pipe(catchError((err) => this.errorHandler(err, email)), tap((respData: AuthResponse) => {
+        this.handleAuthentication(
+          respData.email,
+          respData.localId,
+          respData.idToken,
+          +respData.expiresIn
+        );
+      }));
   }
 
   public login(email: string, password: string): Observable<AuthResponse> {
@@ -21,7 +31,29 @@ export class AuthService {
       'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDlVT_dcJpntW8ND0CH7vKizDUFN4XLB9k',
       { email, password, returnSecureToken: true }
     )
-      .pipe(catchError((err) => this.errorHandler(err, email)));
+      .pipe(catchError((err) => this.errorHandler(err, email)), tap((respData: AuthResponse) => {
+        this.handleAuthentication(
+          respData.email,
+          respData.localId,
+          respData.idToken,
+          +respData.expiresIn
+        );
+      }));
+  }
+
+  public logout() {
+    this.user.next(null);
+  }
+
+  private handleAuthentication(email: string, userId: string, token: string, expiresIn: number): void {
+    const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
+    const newUser = new User(
+      email,
+      userId,
+      token,
+      expirationDate
+    );
+    this.user.next(newUser);
   }
 
   private errorHandler(errorRes: HttpErrorResponse, email: string): ObservableInput<AuthResponse> {
@@ -29,7 +61,7 @@ export class AuthService {
     if (!errorRes.error || !errorRes.error.error) {
       return throwError(errorMessage);
     }
-    switch(errorRes.error.error.message) {
+    switch (errorRes.error.error.message) {
     case 'EMAIL_EXISTS':
       errorMessage = `The email: '${email}' address is already in use by another account`;
       break;
