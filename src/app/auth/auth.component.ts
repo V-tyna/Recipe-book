@@ -32,7 +32,7 @@ export class AuthComponent implements OnInit {
     this.isLoginMode = !this.isLoginMode;
   }
 
-  public onSubmit() {
+  public onSubmit(): void {
     if (this.signForm.invalid) return;
     const { email, password } = this.signForm.value;
     this.isLoading = true;
@@ -59,5 +59,9 @@ export class AuthComponent implements OnInit {
 
     this.error = null;
     this.signForm.reset();
+  }
+
+  public onHandleError(): void {
+    this.error = null;
   }
 }

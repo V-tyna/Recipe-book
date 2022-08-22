@@ -1,15 +1,22 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, ObservableInput, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { RecipeService } from '../recipes/services/recipe.service';
 import { AuthResponse } from './models/auth-response.model';
 import { User } from './models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   public user = new BehaviorSubject<User | null>(null);
+  private tokenTimer: ReturnType<typeof setTimeout> | null;
 
-  constructor(private http: HttpClient) { }
+  constructor(
+    private http: HttpClient,
+    private router: Router,
+    private recipeService: RecipeService
+  ) { }
 
   public signUp(email: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
@@ -24,6 +31,26 @@ export class AuthService {
           +respData.expiresIn
         );
       }));
+  }
+
+  public autoLogin() {
+    const userData: {
+      email: string,
+      id: string,
+      _token: string,
+      _tokenExpirationDate: string
+    } | null = JSON.parse(localStorage.getItem('userData') as string);
+    if (userData) {
+      const loadedUser = new User(
+        userData.email,
+        userData.id,
+        userData._token,
+        new Date(userData._tokenExpirationDate)
+      );
+      const expirationDuration = new Date(userData._tokenExpirationDate).getTime() - new Date().getTime();
+      this.autoLogout(expirationDuration);
+      this.user.next(loadedUser);
+    }
   }
 
   public login(email: string, password: string): Observable<AuthResponse> {
@@ -41,19 +68,32 @@ export class AuthService {
       }));
   }
 
+  public autoLogout(expirationDuration: number): void {
+    this.tokenTimer = setTimeout(() => this.logout(), expirationDuration);
+  }
+
   public logout() {
     this.user.next(null);
+    localStorage.removeItem('userData');
+    this.recipeService.setRecipes([]);
+    this.router.navigate(['/auth']);
+    if (this.tokenTimer) {
+      clearTimeout(this.tokenTimer);
+    }
+    this.tokenTimer = null;
   }
 
   private handleAuthentication(email: string, userId: string, token: string, expiresIn: number): void {
     const expirationDate = new Date(new Date().getTime() + expiresIn * 1000);
-    const newUser = new User(
+    const user = new User(
       email,
       userId,
       token,
       expirationDate
     );
-    this.user.next(newUser);
+    this.user.next(user);
+    this.autoLogout(expiresIn * 1000);
+    localStorage.setItem('userData', JSON.stringify(user));
   }
 
   private errorHandler(errorRes: HttpErrorResponse, email: string): ObservableInput<AuthResponse> {
