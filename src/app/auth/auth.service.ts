@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { BehaviorSubject, Observable, ObservableInput, throwError } from 'rxjs';
 import { catchError, tap } from 'rxjs/operators';
+import { environment } from 'src/environments/environment';
 import { RecipeService } from '../recipes/services/recipe.service';
 import { AuthResponse } from './models/auth-response.model';
 import { User } from './models/user.model';
@@ -20,7 +21,7 @@ export class AuthService {
 
   public signUp(email: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=AIzaSyDlVT_dcJpntW8ND0CH7vKizDUFN4XLB9k',
+      `https://identitytoolkit.googleapis.com/v1/accounts:signUp?key=${environment.firebaseAPIKey}`,
       { email, password, returnSecureToken: true }
     )
       .pipe(catchError((err) => this.errorHandler(err, email)), tap((respData: AuthResponse) => {
@@ -55,7 +56,7 @@ export class AuthService {
 
   public login(email: string, password: string): Observable<AuthResponse> {
     return this.http.post<AuthResponse>(
-      'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyDlVT_dcJpntW8ND0CH7vKizDUFN4XLB9k',
+      `https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=${environment.firebaseAPIKey}`,
       { email, password, returnSecureToken: true }
     )
       .pipe(catchError((err) => this.errorHandler(err, email)), tap((respData: AuthResponse) => {

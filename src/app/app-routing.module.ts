@@ -1,32 +1,25 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
-import { AuthGuardService } from './auth/auth-guard.service';
-import { AuthComponent } from './auth/auth.component';
+import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
 import { appPaths } from './configs/appPaths';
-import { RecipeDetailComponent } from './recipes/recipe-detail/recipe-detail.component';
-import { RecipeEditComponent } from './recipes/recipe-edit/recipe-edit.component';
-import { RecipeStartComponent } from './recipes/recipe-start/recipe-start.component';
-import { RecipesComponent } from './recipes/recipes/recipes.component';
-import { RecipeResolverService } from './recipes/services/recipe-resolver.service';
-import { ShoppingListComponent } from './shopping-list/shopping-list/shopping-list.component';
 
 const appRoutes: Routes = [
   { path: appPaths.empty, redirectTo: `/${appPaths.recipes}`, pathMatch: 'full' },
-  { path: appPaths.auth, component: AuthComponent },
-  { path: appPaths.recipes,
-    canActivate: [AuthGuardService],
-    component: RecipesComponent,
-    children: [
-      { path: appPaths.empty, component: RecipeStartComponent },
-      { path: appPaths.new, component: RecipeEditComponent },
-      { path: appPaths.id, component: RecipeDetailComponent, resolve: [RecipeResolverService] },
-      { path: appPaths.edit, component: RecipeEditComponent }
-    ] },
-  { path: appPaths.shoppingList, component: ShoppingListComponent }
+  {
+    path: appPaths.auth,
+    loadChildren: () => import('./auth/auth.module').then((mod) => mod.AuthModule)
+  },
+  {
+    path: appPaths.recipes,
+    loadChildren: () => import('./recipes/modules/recipe.module').then((mod) => mod.RecipesModule)
+  },
+  {
+    path: appPaths.shoppingList,
+    loadChildren: () => import('./shopping-list/shopping-list.module').then((mod) => mod.ShoppingListModule)
+  }
 ];
 
 @NgModule({
-  imports: [RouterModule.forRoot(appRoutes)],
+  imports: [RouterModule.forRoot(appRoutes, { preloadingStrategy: PreloadAllModules })],
   exports: [RouterModule],
   declarations: [],
   providers: [],
