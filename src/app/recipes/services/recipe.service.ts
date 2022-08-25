@@ -1,9 +1,12 @@
 /* eslint-disable max-len */
 import { Injectable } from '@angular/core';
+import { Store } from '@ngrx/store';
 import { Subject } from 'rxjs';
 import { Ingredient } from 'src/app/shared/ingredient.model';
 import { ShoppingListService } from 'src/app/shopping-list/services/shopping-list.service';
+import { IngredientState } from 'src/app/shopping-list/state-storage/shopping-list.model';
 import { Recipe } from '../recipes/recipe.model';
+import * as ShoppingListActions from '../../shopping-list/state-storage/shopping-list.action';
 
 @Injectable({
   providedIn: 'root'
@@ -79,7 +82,10 @@ export class RecipeService {
   //   )
   // ];
 
-  constructor(private shoppingListService: ShoppingListService) {}
+  constructor(
+    private shoppingListService: ShoppingListService,
+    private store: Store<IngredientState>
+  ) {}
 
   public getRecipes(): Recipe[] {
     return this.recipes.slice();
@@ -95,7 +101,8 @@ export class RecipeService {
   }
 
   public addIngredientsToTheShoppingList(ingredients: Ingredient[]): void {
-    this.shoppingListService.addIngredients(ingredients);
+    // this.shoppingListService.addIngredients(ingredients);
+    this.store.dispatch(new ShoppingListActions.AddIngredients(ingredients));
   }
 
   public addRecipe(newRecipe: Recipe): void {
