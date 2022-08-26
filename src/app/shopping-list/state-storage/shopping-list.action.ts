@@ -5,6 +5,8 @@ export const ADD_INGREDIENT = 'ADD_INGREDIENT';
 export const ADD_INGREDIENTS = 'ADD_INGREDIENTS';
 export const UPDATE_INGREDIENT = 'UPDATE_INGREDIENT';
 export const DELETE_INGREDIENT = 'DELETE_INGREDIENT';
+export const START_EDIT = 'START_EDIT';
+export const STOP_EDIT = 'STOP_EDIT';
 
 export class AddIngredient implements Action {
   type = ADD_INGREDIENT;
@@ -16,18 +18,30 @@ export class AddIngredients implements Action {
   constructor(public payload?: Ingredient[]) {}
 }
 
-export class updateIngredient implements Action {
+export class UpdateIngredient implements Action {
   type = UPDATE_INGREDIENT;
-  constructor(public payload?: { index: number, ingredient: Ingredient }) {}
+  constructor(public payload?: Ingredient) {}
 }
 
-export class deleteIngredient implements Action {
+export class DeleteIngredient implements Action {
   type = DELETE_INGREDIENT;
+  constructor(public payload?: null) {}
+}
+
+export class StartEdit implements Action {
+  type = START_EDIT;
   constructor(public payload?: number) {}
+}
+
+export class StopEdit implements Action {
+  type = STOP_EDIT;
+  constructor(public payload?: null) {}
 }
 
 export type ShoppingListActions =
 AddIngredient
 | AddIngredients
-| updateIngredient
-| deleteIngredient;
+| UpdateIngredient
+| DeleteIngredient
+| StartEdit
+| StopEdit;
