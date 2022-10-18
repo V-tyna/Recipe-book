@@ -1,0 +1,48 @@
+<form class="note-form" [formGroup]="noteForm" (ngSubmit)="onSubmit()">
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="form-group">
+        <label for="noteName">Note name: </label>
+        <input
+          name="noteName"
+          type="text"
+          placeholder="Type note name here..."
+          formControlName="noteName"
+        />
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-xs-12">
+      <div class="form-group">
+        <label for="noteContent">Note:</label>
+        <textarea
+          name="noteContent"
+          rows="7"
+          cols="100"
+          formControlName="noteContent"
+        ></textarea>
+      </div>
+    </div>
+  </div>
+  <div class="btn-area">
+    <button class="btn btn-success" type="submit" [disabled]="noteForm.invalid">Save</button>
+    <button class="btn btn-info" (click)="clearFormContent()">Clear</button>
+  </div>
+</form>
+<div
+  class="btn-note"
+  [ngClass]="{ 'btn-success': !isShown, 'btn-danger': isShown }"
+  (click)="showNotes()"
+>
+  {{ isShownButtonContent }}
+</div>
+<div *ngIf="isShown && notes.length">
+  <h4>Notes list: </h4>
+  <div *ngFor="let note of notes">
+    <span>{{ note.name }}</span>
+    <p>{{ note.content }}</p>
+    <button class="btn btn-info" (click)="editNote(note.id!)">Edit</button>
+    <button class="btn btn-danger" (click)="deleteNote(note.id!)">Delete</button>
+  </div>
+</div>

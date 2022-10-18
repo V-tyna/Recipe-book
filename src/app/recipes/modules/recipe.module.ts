@@ -5,9 +5,12 @@ import { RecipeDetailComponent } from '../recipe-detail/recipe-detail.component'
 import { RecipeEditComponent } from '../recipe-edit/recipe-edit.component';
 import { RecipeItemComponent } from '../recipe-list/recipe-item/recipe-item.component';
 import { RecipeListComponent } from '../recipe-list/recipe-list/recipe-list.component';
+import { RecipeNoteComponent } from '../recipe-note/recipe-note/recipe-note.component';
 import { RecipeStartComponent } from '../recipe-start/recipe-start.component';
 
 import { RecipesComponent } from '../recipes/recipes.component';
+import { NoteStorageService } from '../services/note-storage.service';
+import { NoteService } from '../services/notes.service';
 import { RecipesRoutingModule } from './recipes-routing.module';
 
 @NgModule({
@@ -22,6 +25,7 @@ import { RecipesRoutingModule } from './recipes-routing.module';
     RecipeEditComponent,
     RecipeItemComponent,
     RecipeListComponent,
+    RecipeNoteComponent,
     RecipeStartComponent
   ],
   declarations: [
@@ -30,7 +34,12 @@ import { RecipesRoutingModule } from './recipes-routing.module';
     RecipeEditComponent,
     RecipeItemComponent,
     RecipeListComponent,
+    RecipeNoteComponent,
     RecipeStartComponent
+  ],
+  providers: [
+    NoteService,
+    NoteStorageService
   ]
 })
 export class RecipesModule { }
