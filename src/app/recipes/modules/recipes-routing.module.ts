@@ -7,6 +7,7 @@ import { RecipeDetailComponent } from '../recipe-detail/recipe-detail.component'
 import { RecipeEditComponent } from '../recipe-edit/recipe-edit.component';
 import { RecipeStartComponent } from '../recipe-start/recipe-start.component';
 import { RecipeResolverService } from '../services/recipe-resolver.service';
+import { RecipeNoteComponent } from '../recipe-note/recipe-note/recipe-note.component';
 
 const recipesRoutes: Routes = [{ path: appPaths.empty,
   canActivate: [AuthGuardService],
@@ -15,7 +16,10 @@ const recipesRoutes: Routes = [{ path: appPaths.empty,
     { path: appPaths.edit, component: RecipeEditComponent },
     { path: appPaths.empty, component: RecipeStartComponent },
     { path: appPaths.new, component: RecipeEditComponent },
-    { path: appPaths.id, component: RecipeDetailComponent, resolve: [RecipeResolverService] }
+    { path: appPaths.id,
+      component: RecipeDetailComponent,
+      resolve: [RecipeResolverService],
+      children: [{ path: appPaths.note, component: RecipeNoteComponent }] }
   ]
 }];
 

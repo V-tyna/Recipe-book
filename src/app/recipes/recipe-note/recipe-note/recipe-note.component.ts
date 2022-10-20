@@ -1,6 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
-import { ActivatedRoute, Params } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { Note } from 'src/app/models/note.model';
 import { NoteService } from '../../services/notes.service';
 
@@ -12,6 +12,7 @@ import { NoteService } from '../../services/notes.service';
 export class RecipeNoteComponent implements OnInit {
   public id: string;
   public isShown = false;
+  public noNotes = false;
   public notes: Note[] = [];
   public isShownButtonContent = 'Show notes';
   public noteForm = new FormGroup({
@@ -19,15 +20,18 @@ export class RecipeNoteComponent implements OnInit {
     noteContent: new FormControl('', Validators.required)
   });
 
+  private noteId = '';
+  private editMode = false;
+
+  @Input() recipeId: string;
+
   constructor(
-    private route: ActivatedRoute,
-    private noteService: NoteService
+    private noteService: NoteService,
+    private route: ActivatedRoute
   ) {}
 
   public ngOnInit(): void {
-    this.route.params.subscribe((param: Params) => {
-      this.id = param['id'];
-    });
+    this.id = this.route.snapshot.parent?.params['id'];
     this.noteService.getNotes(this.id).subscribe((notes: Note[]) => {
       this.notes = notes;
     });
@@ -36,35 +40,75 @@ export class RecipeNoteComponent implements OnInit {
   public showNotes(): void {
     this.isShown = !this.isShown;
     this.isShownButtonContent = this.isShown ? 'Hide notes' : 'Show notes';
-    const currentNotes = Object.values(this.notes);
-    const keys = Object.keys(this.notes);
-    this.notes = currentNotes.map((obj: Note, i: number) => {
-      obj.id = keys[i];
-      return obj;
-    });
+    if (this.notes) {
+      const currentNotes = Object.values(this.notes);
+      const keys = Object.keys(this.notes);
+      this.notes = currentNotes.map((obj: Note, i: number) => {
+        obj.id = keys[i];
+        return { ...obj };
+      });
+    }
   }
 
   public clearFormContent(): void {
+    this.editMode = false;
     this.noteForm.reset();
   }
 
   public onSubmit(): void {
-    const { noteName, noteContent } = this.noteForm.value;
-    const note: Note = {
-      name: noteName,
-      content: noteContent,
-      recipeId: this.id
-    };
-    this.notes.push(note);
-    this.noteService.setNote(note);
+    const note: Note = this.collectDataFromNoteForm();
+    if (this.editMode) {
+      this.noteService.editNote(this.id, this.noteId, note);
+      this.editMode = false;
+      this.notes = this.notes.map((obj: Note) => {
+        if (obj.id === this.noteId) {
+          obj = { ...note, id: this.noteId };
+        }
+        return obj;
+      });
+    } else {
+      this.noteService.setNote(note);
+      this.addNoteToNotes(note);
+    }
+    this.noteForm.reset();
   }
 
   public editNote(id: string): void {
-    console.log('edit', id);
+    this.noteId = id;
+    this.editMode = true;
+    this.setDataToControls(id);
   }
 
   public deleteNote(id: string): void {
     this.noteService.removeNotes(this.id, id);
     this.notes = this.notes.filter((note: Note) => note.id !== id);
+  }
+
+  private setDataToControls(id: string) {
+    const note = this.findNote(id);
+    this.noteForm.setValue({
+      noteName: note?.name || '',
+      noteContent: note?.content || ''
+    });
+  }
+
+  private collectDataFromNoteForm(): Note {
+    const { noteName, noteContent } = this.noteForm.value;
+    return {
+      name: noteName,
+      content: noteContent,
+      recipeId: this.id
+    };
+  }
+
+  private addNoteToNotes(note: Note): void {
+    if (!this.notes) {
+      this.notes = [];
+    }
+    this.notes.push(note);
+  }
+
+  private findNote(id: string): Note | undefined {
+    return this.notes.find((obj: Note) => obj.id === id);
   }
 }

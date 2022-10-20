@@ -10,7 +10,6 @@ import { RecipeService } from '../services/recipe.service';
 })
 export class RecipeDetailComponent implements OnInit {
   public recipeDetails: Recipe;
-
   public id: number;
 
   constructor(
@@ -26,15 +25,15 @@ export class RecipeDetailComponent implements OnInit {
     });
   }
 
-  public onAddToTheShoppingList() {
+  public onAddToTheShoppingList(): void {
     this.recipeService.addIngredientsToTheShoppingList(this.recipeDetails.ingredients);
   }
 
-  public onEditRecipe() {
+  public onEditRecipe(): void {
     this.router.navigate(['edit'], { relativeTo: this.route });
   }
 
-  public onDeleteRecipe() {
+  public onDeleteRecipe(): void {
     this.recipeService.deleteRecipe(this.id);
     this.router.navigate(['/recipes']);
   }

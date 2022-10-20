@@ -16,8 +16,11 @@ export class NoteService {
   }
 
   public getNotes(id: string): Observable<Note[]> {
-    console.log('Get SERVICE note works');
     return this.noteStorageService.getNotes(id);
+  }
+
+  public editNote(recipeId: string, id: string, note: Note): void {
+    this.noteStorageService.patchNote(recipeId, id, note);
   }
 
   public removeNotes(recipeId: string, id: string): void {

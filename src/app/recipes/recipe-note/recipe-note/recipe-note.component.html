@@ -27,7 +27,7 @@
   </div>
   <div class="btn-area">
     <button class="btn btn-success" type="submit" [disabled]="noteForm.invalid">Save</button>
-    <button class="btn btn-info" (click)="clearFormContent()">Clear</button>
+    <button class="btn btn-info" type="button" (click)="clearFormContent()">Clear</button>
   </div>
 </form>
 <div
@@ -37,7 +37,7 @@
 >
   {{ isShownButtonContent }}
 </div>
-<div *ngIf="isShown && notes.length">
+<div *ngIf="isShown && notes">
   <h4>Notes list: </h4>
   <div *ngFor="let note of notes">
     <span>{{ note.name }}</span>
@@ -46,3 +46,4 @@
     <button class="btn btn-danger" (click)="deleteNote(note.id!)">Delete</button>
   </div>
 </div>
+<div *ngIf="isShown && !notes"><p>There is no notes yet...</p></div>

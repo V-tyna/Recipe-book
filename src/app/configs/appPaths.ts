@@ -6,6 +6,7 @@ export const appPaths: AppPaths = {
   recipes: 'recipes',
   id: ':id',
   new: 'new',
+  note: 'note',
   edit: ':id/edit',
   shoppingList: 'shopping-list'
 };
